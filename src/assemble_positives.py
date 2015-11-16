@@ -2,10 +2,9 @@
 # of complete and valid NFPA 704 symbols. This script was needed due to the
 # high cardinality of valid NFPA 704 symbols given the sheer number of possible
 # combinations of components. Every NFPA-standardized digit is included in the
-# component set as well as a few non-standard ones. All permutations of the
-# availabe components are created. This script was not designed to be robust or
-# maintainable and is currently suitable only for development and testing
-# purposes.
+# component set. All permutations of the availabe components are created. This
+# script was not designed to be robust or maintainable and is currently suitable
+# only for development and testing purposes.
 #
 # @param componentsDir <string> The absolute or relative filesystem path to the
 #   components directory.
@@ -18,8 +17,8 @@ from PIL import Image
 import sys
 
 # Collect arguments. Not yet any validation or sanitization here.
-#~ componentsDirPath = sys.argv[1]
-#~ outputDirPath = sys.argv[2]
+#~ componentsDirPath = os.path.realpath(sys.argv[1])
+#~ outputDirPath = os.path.realpath(sys.argv[2])
 
 # Image components directory path
 currentFilePath = os.path.realpath(__file__)
