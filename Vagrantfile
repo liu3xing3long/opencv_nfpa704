@@ -74,6 +74,8 @@ Vagrant.configure(2) do |config|
     end
 
     # The path at which extension disk file will be saved.
+    # This file name will not conflict with other machines since each machine
+    # is contained in own subdirectory under VBox directory.
     vBoxExtensionDiskPathname = File.join(
       vBoxSysProperties['Default machine folder'],
       vb.name,
@@ -132,27 +134,27 @@ Vagrant.configure(2) do |config|
     # box means it may not yet be worth it to write code to extract UUIDs.
     sudo parted /dev/sdb mklabel gpt mkpart primary ext4 1MiB 100%
     sudo mkfs.ext4 /dev/sdb1
-    mkdir ~/abs
-    sudo mount /dev/sdb1 ~/abs
-    sudo chown vagrant:vagrant ~/abs
+    sudo -u vagrant mkdir /home/vagrant/abs
+    sudo mount /dev/sdb1 /home/vagrant/abs
+    sudo chown vagrant:vagrant /home/vagrant/abs
     fstabLine='/dev/sdb1 /home/vagrant/abs ext4 rw,user,data=ordered 0 0'
     sudo printf '\n%s' $fstabLine >> /etc/fstab
-
-    # Install OpenCV from AUR because opencv is out of date in core (extra).
-    # Note that by default, OpenCV build installs proprietary extensions such as
-    # IPP. I would disable support for these if I were to use OpenCV more heavily.
-    cd ~/abs
-    git clone https://aur.archlinux.org/opencv-git.git
-    cd opencv-git
-    makepkg -sr --noconfirm
-    sudo pacman -U opencv-git*.pkg.tar.xz --noconfirm
 
     # Enable X forwarding. Enable for a session with 'vagrant ssh -- -X'.
     sudo sed -i 's/#X11Forwarding no/X11Forwarding yes/' /etc/ssh/sshd_config
     sudo systemctl reload sshd
 
+    # Install OpenCV from AUR because opencv is out of date in core (extra).
+    # Note that by default, OpenCV build installs proprietary extensions such as
+    # IPP. I would disable support for these if I were to use OpenCV more heavily.
+    cd /home/vagrant/abs
+    sudo -u vagrant git clone https://aur.archlinux.org/opencv-git.git
+    cd opencv-git
+    sudo -u vagrant makepkg -sr --noconfirm
+    sudo pacman -U opencv-git*.pkg.tar.xz --noconfirm
+
     # Modify alias in vagrant user's .bashrc to personal preference.
-    sed -i "s/alias la='ls -A'/alias la='ls -Alh --color'/" ~/.bashrc
-    source ~/.bashrc
+    sed -i "s/alias la='ls -A'/alias la='ls -Alh --color'/" /home/vagrant/.bashrc
+    source /home/vagrant/.bashrc
   SHELL
 end
