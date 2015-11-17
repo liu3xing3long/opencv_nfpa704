@@ -134,15 +134,11 @@ Vagrant.configure(2) do |config|
     # box means it may not yet be worth it to write code to extract UUIDs.
     sudo parted /dev/sdb mklabel gpt mkpart primary ext4 1MiB 100%
     sudo mkfs.ext4 /dev/sdb1
-    sudo -u vagrant mkdir /home/vagrant/abs
+    mkdir /home/vagrant/abs
     sudo mount /dev/sdb1 /home/vagrant/abs
     sudo chown vagrant:vagrant /home/vagrant/abs
     fstabLine='/dev/sdb1 /home/vagrant/abs ext4 rw,user,data=ordered 0 0'
     sudo printf '\n%s' $fstabLine >> /etc/fstab
-
-    # Enable X forwarding. Enable for a session with 'vagrant ssh -- -X'.
-    sudo sed -i 's/#X11Forwarding no/X11Forwarding yes/' /etc/ssh/sshd_config
-    sudo systemctl reload sshd
 
     # Install OpenCV from AUR because opencv is out of date in core (extra).
     # Note that by default, OpenCV build installs proprietary extensions such as
@@ -150,8 +146,13 @@ Vagrant.configure(2) do |config|
     cd /home/vagrant/abs
     sudo -u vagrant git clone https://aur.archlinux.org/opencv-git.git
     cd opencv-git
+    sed -i "/BUILD_NEW_PYTHON_SUPPORT=ON/a _cmakeopts+=('-D WITH_IPP=OFF')" PKGBUILD
     sudo -u vagrant makepkg -sr --noconfirm
     sudo pacman -U opencv-git*.pkg.tar.xz --noconfirm
+
+    # Enable X forwarding. Enable for a session with 'vagrant ssh -- -X'.
+    sudo sed -i 's/#X11Forwarding no/X11Forwarding yes/' /etc/ssh/sshd_config
+    sudo systemctl reload sshd
 
     # Modify alias in vagrant user's .bashrc to personal preference.
     sed -i "s/alias la='ls -A'/alias la='ls -Alh --color'/" /home/vagrant/.bashrc
