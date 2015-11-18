@@ -124,8 +124,9 @@ Vagrant.configure(2) do |config|
     # parted - Used for provisioning extra disk.
     # python-numpy - Used in OpenCV image manipulation.
     # python-pillow - PIL fork. Used for generating NFPA 704 positive samples.
+    # xorg-xauth - Necessary for proper X11 forwarding using PIL or OpenCV.
     # xv - Used for Pillow's Image.show()
-    sudo pacman -Syu parted python-numpy python-pillow xv --noconfirm
+    sudo pacman -Syu parted python-numpy python-pillow xorg-xauth xv --noconfirm
     # Remove orphaned packages.
     sudo pacman -Rns $(pacman -Qtdq) --noconfirm
 
