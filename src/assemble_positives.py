@@ -17,32 +17,19 @@ from PIL import Image
 import sys
 
 # Collect arguments. Not yet any validation or sanitization here.
-#~ componentsDirPath = os.path.realpath(sys.argv[1])
-#~ outputDirPath = os.path.realpath(sys.argv[2])
-
-# Image components directory path
-currentFilePath = os.path.realpath(__file__)
-imageComponentsDirPath = os.path.join(
-  os.path.dirname(currentFilePath),
-  'exported_components'
-)
-
-# Generated images destination path
-newImageDestinationPath = os.path.join(
-  os.path.dirname(currentFilePath),
-  'test_output'
-)
+componentsDirPath = os.path.realpath(sys.argv[1])
+outputDirPath = os.path.realpath(sys.argv[2])
 
 # Enumerate blank diamond "templates."
 imageComponentsDiamondsGlob = os.path.join(
-  imageComponentsDirPath,
+  componentsDirPath,
   'diamond_*.png'
 )
 imageComponentsDiamondPaths = glob.glob(imageComponentsDiamondsGlob)
 
 # Enumerate numeric digits for red, yellow, and blue quadrants.
 imageComponentsDigitsGlob = os.path.join(
-  imageComponentsDirPath,
+  componentsDirPath,
   'digit_*.png'
 )
 imageComponentsDigitPaths = glob.glob(imageComponentsDigitsGlob)
@@ -50,7 +37,7 @@ imageComponentsDigitPaths.sort()
 
 # Enumerate special (white) quadrant content.
 imageComponentsSpecialGlob = os.path.join(
-  imageComponentsDirPath,
+  componentsDirPath,
   'special_*.png'
 )
 imageComponentsSpecialPaths = glob.glob(imageComponentsSpecialGlob)
@@ -74,25 +61,33 @@ for baseDiamond in imageComponentsDiamondPaths:
     digitBlueImage = Image.open(digitBluePath)
     baseDiamondCopyBlue.paste(digitBlueImage, quadrantBlueCoords, digitBlueImage)
 
-    # Iterate red digits
+    # Iterate red digits.
     for digitRedPath in imageComponentsDigitPaths:
       baseDiamondCopyRed = baseDiamondCopyBlue.copy()
       digitRedImage = Image.open(digitRedPath)
       baseDiamondCopyRed.paste(digitRedImage, quadrantRedCoords, digitRedImage)
 
-      # Iterate yellow digits
+      # Iterate yellow digits.
       for digitYellowPath in imageComponentsDigitPaths:
         baseDiamondCopyYellow = baseDiamondCopyRed.copy()
         digitYellowImage = Image.open(digitYellowPath)
-        baseDiamondCopyYellow.paste(digitYellowImage, quadrantYellowCoords, digitYellowImage)
+        baseDiamondCopyYellow.paste(
+          digitYellowImage,
+          quadrantYellowCoords,
+          digitYellowImage
+        )
 
-        # Iterate white symbols
+        # Iterate white symbols and save image.
         for digitWhitePath in imageComponentsSpecialPaths:
           baseDiamondCopyWhite = baseDiamondCopyYellow.copy()
           digitWhiteImage = Image.open(digitWhitePath)
-          baseDiamondCopyWhite.paste(digitWhiteImage, quadrantWhiteCoords, digitWhiteImage)
+          baseDiamondCopyWhite.paste(
+            digitWhiteImage,
+            quadrantWhiteCoords,
+            digitWhiteImage
+          )
           baseDiamondCopyWhite.save(
-            os.path.join(newImageDestinationPath, str(imageCount) + '.png')
+            os.path.join(outputDirPath, str(imageCount) + '.png')
           )
           imageCount += 1
 
