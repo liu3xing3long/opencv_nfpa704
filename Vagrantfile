@@ -60,6 +60,11 @@ Vagrant.configure(2) do |config|
     # Override default VM image name.
     vb.name = pwdBasename
 
+    # VM MEMORY. THIS IS IMPORTANT.
+    # The developer's default value is below. When training the Haar classifier,
+    # more memory is better.
+    # vb.memory = 4086
+
     # The base box ships with an insufficient home directory size. Begin process
     # of creating new "extension" VM disk and adding to box's LVM.
     # I want disk file to be placed in default machine directory.
