@@ -16,8 +16,7 @@ for imagePath in imagePositivePaths:
     + ' -img ' + imagePath
     + ' -bg negatives.txt'
     + ' -info training/' + os.path.basename(imagePath) + '.txt'
-    + ' -num 20 -w 300 -h 300 -bgthresh 0 -bgcolor 40',
+    + ' -num 4 -w 48 -h 48 -bgthresh 0 -bgcolor 40',
     shell=True
   )
   time.sleep(5)
-
