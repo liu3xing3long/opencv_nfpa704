@@ -6,6 +6,12 @@
 # correcting color profile errors in the process. PNG format is uniformally used
 # to avoid the degredation of image quality over repeated JPG compression on an
 # image. The original image files are deleted after the resave operations.
+#
+# Ideally, this would copy target directory's contents to temp directory on
+# on which operations will be performed. This would enable a transaction-like
+# series of changes rather than destructive modification to original files that
+# is irreversible in the case of fatal errors.
+#
 # @param directoryPath {string} The directory in which the image files exist.
 # @warning The original image files are deleted.
 
@@ -21,8 +27,9 @@ for srcFileName in os.listdir(directoryPath):
   srcFileNameSplit = srcFileName.split('.')
   srcFileExtension = srcFileNameSplit[len(srcFileNameSplit) - 1]
   if srcFileExtension == 'jpg' or srcFileExtension == 'png':
-    image = Image.open(srcFilePath)
     destFileName = str(iterationCount).zfill(3) + '.png'
+    image = Image.open(srcFilePath)
+    image = image.convert('RGB')
     image.save(os.path.join(directoryPath, destFileName))
     os.remove(srcFilePath)
     iterationCount += 1
