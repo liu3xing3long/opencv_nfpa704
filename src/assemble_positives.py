@@ -1,22 +1,24 @@
 # This script "assembles" the NFPA 704 symbol components into a series
 # of complete and valid NFPA 704 symbols. This script was needed due to the
 # high cardinality of valid NFPA 704 symbols given the sheer number of possible
-# combinations of components. Every NFPA-standardized digit is included in the
-# component set. All permutations of the availabe components are created. This
-# script was not designed to be robust or maintainable and is currently suitable
-# only for development and testing purposes.
+# combinations of components.
 #
-# @param componentsDir <string> The absolute or relative filesystem path to the
-#   components directory.
-# @param outputDir <string> The absolute or relative filesystem path to the
-#   directory to which all generated NFPA 704 symbols should be saved.
+# Every NFPA-standardized digit is included in the component set. All
+# permutations of the availabe components are created. This script was not
+# designed to be robust or maintainable and is currently suitable only for
+# development and/or testing purposes.
+#
+# @param componentsDir <string> The filesystem path of the directory containing
+#   the NFPA 704 component images.
+# @param outputDir <string> The filesystem path of the directory to which all
+#   generated NFPA 704 symbols should be saved.
 
 import glob
 import os
 from PIL import Image
 import sys
 
-# Collect arguments. Not yet any validation or sanitization here.
+# Collect arguments. Not yet any validation or sanitization here so be careful.
 componentsDirPath = os.path.realpath(sys.argv[1])
 outputDirPath = os.path.realpath(sys.argv[2])
 
@@ -42,13 +44,16 @@ imageComponentsSpecialGlob = os.path.join(
 )
 imageComponentsSpecialPaths = glob.glob(imageComponentsSpecialGlob)
 
+# Given that all diamond templates are 300x300 pixels and the components are
+# 71x71 pixels, the following tuples are coordinates for proper placement of the
+# respective pieces.
 quadrantRedCoords = (114, 41)
 quadrantBlueCoords = (41, 114)
 quadrantYellowCoords = (188, 114)
 quadrantWhiteCoords = (114, 188)
 
 # This is going to get ugly. REVISE THIS.
-# Don't reopen files constantly. Abstract this.
+# Don't close reopen files constantly. Abstract this.
 # Break nested loops into functions? Use itertools.combinations?
 # Iterate base diamonds.
 imageCount = 0
@@ -77,7 +82,7 @@ for baseDiamond in imageComponentsDiamondPaths:
           digitYellowImage
         )
 
-        # Iterate white symbols and save image.
+        # Iterate white symbols and save images.
         for digitWhitePath in imageComponentsSpecialPaths:
           baseDiamondCopyWhite = baseDiamondCopyYellow.copy()
           digitWhiteImage = Image.open(digitWhitePath)
