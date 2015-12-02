@@ -22,11 +22,14 @@ clean: | $(TMPDIR)
 # Probably better for random selection by opencv_createsamples anyway.
 negatives: | $(IMGDIR_NEG)
 	mkdir -p $(TMPDIR)
-	find $(IMGDIR_NEG) -regextype posix-extended -regex '.*\.(png|jpg)' > $(NEGLIST_PATH)
+	find $(IMGDIR_NEG) -regextype posix-extended -regex '.*\.(png|jpg)' \
+		| sed 's/^/..\//' \
+		> $(NEGLIST_PATH)
 
 positives: | $(SRCDIR)/assemble_positives.py $(SRCDIR)/positive_components
 	mkdir -p $(IMGDIR_POS)
-	python $(SRCDIR)/assemble_positives.py $(SRCDIR)/positive_components $(IMGDIR_POS)
+	python $(SRCDIR)/assemble_positives.py $(SRCDIR)/positive_components \
+		$(IMGDIR_POS)
 
 # Warning: this step takes a long time.
 # Also, a need to devise a way to parse order-only prereqs to avoid relisting
