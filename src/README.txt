@@ -33,3 +33,6 @@ Ideally, training would include variations for:
   character size
   "water reactive" symbol strikethrough placement
   lateral coplacement of "water reactive" and "oxidizer" special symbols instead of vertical
+  increase transform angles of positive sample generation
+
+Vagrantfile needs to provision date and time to match host system.
