@@ -20,7 +20,7 @@ VEC_PATH=$(TMPDIR)/cropped.vec
 
 # This target will execute the training from start to finish. It will take a
 # very long time.
-all: negatives positives samples vec
+all: negatives positives samples vec cascade
 
 # Warning: this step takes a very, very long time. If a bad_alloc exception is
 # thrown, examine system memory availability and/or adjust the precalc*
@@ -38,7 +38,7 @@ cascade: $(NEGLIST_PATH) $(VEC_PATH)
 		-w 48 -h 48
 
 # Warning: this removes all generated files including positive sample images.
-clean: | $(TMPDIR)
+clean: | $(TMPDIR) $(IMGDIR_POS)
 	rm -R $(TMPDIR)
 	rm -R $(IMGDIR_POS)
 
@@ -77,6 +77,3 @@ vec: $(SMPLDIR)
 		-bg $(NEGLIST_PATH_CSCD) \
 		-vec $(VEC_PATH) \
 		-num 5000 -w 48 -h 48
-
-
-
