@@ -91,7 +91,7 @@ Vagrant.configure(2) do |config|
       vb.customize [
         'createhd',
         '--filename', vBoxExtensionDiskPathname,
-        '--size', 5 * 1024
+        '--size', 6 * 1024
       ]
     end
 
